@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 import argparse
 import sqlite3
+import os
 
-database_file = "clipboard.db"
+database_file = os.path.join(os.path.expanduser("~"), "clipboard.db") 
 conn = sqlite3.connect(database_file)
 cursor = conn.cursor()
 
 def get_n_last_entries(n: int):
-    cursor.execute("select * from history order by id desc limit ?", (n,))
+    cursor.execute("SELECT * FROM history ORDER BY id DESC LIMIT ?", (n,))
     entries = cursor.fetchall()
+    for entry in entries:
+        print(entry[2])
     return entries
 
 def main():
