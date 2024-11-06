@@ -3,7 +3,7 @@ import argparse
 import sqlite3
 import os
 
-database_file = os.path.join(os.path.expanduser("~"), "clipboard.db") 
+database_file = "clipboard.db"
 conn = sqlite3.connect(database_file)
 cursor = conn.cursor()
 
