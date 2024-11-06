@@ -1,9 +1,8 @@
 import sqlite3
 import time
-import os
-import subprocess
+import pyperclip
 
-database_file = os.path.join(os.path.expanduser("~"), "clipboard.db") 
+database_file = "clipboard.db"
 conn = sqlite3.connect(database_file)
 cursor = conn.cursor()
 
@@ -21,25 +20,11 @@ def save_to_db(content):
     cursor.execute("insert into history (timestamp, content) values(?,?)", (timestamp, content))
     conn.commit()
 
-def get_n_last_entries(n: int):
-    cursor.execute("select * from history order by id desc limit ?", (n,))
-    entries = cursor.fetchall()
-    return entries
 
-def get_clipboard_content():
-    result = subprocess.run(['/usr/bin/xclip', '-o', '-selection', 'clipboard'], 
-                            stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if result.returncode == 0:
-        return result.stdout.decode('utf-8')
-    else:
-        print(f"Error retrieving clipboard content: {result.stderr.decode('utf-8')}")
-        return None
-        
 def monitor_clipboard():
     previous_content = None
     while True:
-        content = get_clipboard_content()
-        print(f"content: {content}")
+        content = pyperclip.paste()
         if content != previous_content:
             save_to_db(content)
             previous_content = content

@@ -10,9 +10,20 @@ cursor = conn.cursor()
 def get_n_last_entries(n: int):
     cursor.execute("SELECT * FROM history ORDER BY id DESC LIMIT ?", (n,))
     entries = cursor.fetchall()
-    for entry in entries:
-        print(entry[2])
+    print("\nLast Clipboard Entries:\n" + "-" * 30)
+    for idx, entry in enumerate(entries, start=1):
+        print(f"{entry[2]}")
+        print("-" * 30)
+    
     return entries
+
+def get_last_entry():
+    cursor.execute("SELECT * FROM history ORDER BY id DESC LIMIT 1")
+    entry = cursor.fetchone()
+    print("\nLast Clipboard Entries:\n" + "-" * 30)
+    print(entry[2])
+    print("-" * 30)
+    return entry
 
 def main():
     parser = argparse.ArgumentParser(description="Clipboard manager")
@@ -21,7 +32,7 @@ def main():
     if args.n:
         get_n_last_entries(args.n)
     else:
-        get_n_last_entries(1)
+        get_last_entry()
 
 if __name__ == "__main__":
     main()
